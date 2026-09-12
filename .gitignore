@@ -1,0 +1,21 @@
+# Gradle
+.gradle/
+build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Minecraft runtime
+run/
+
+# Local dependencies (create jar is not redistributable)
+libs/
+
+# OS
+Thumbs.db
+.DS_Store

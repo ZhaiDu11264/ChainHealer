@@ -1,0 +1,39 @@
+modLoader = "javafml" #mandatory
+loaderVersion = "${loader_range}" #mandatory
+license = "MIT"
+authors = "ZhaiDu11264"
+
+[[mods]] #mandatory
+modId = "chainhealer" #mandatory
+version = "${mod_version}" #mandatory
+displayName = "Chain Healer" #mandatory
+description = '''
+Heals one-sided chain conveyor connections instead of amputating them.
+Fixes frogports silently refusing to send packages on a conveyor whose
+connection data went stale, and lets players repair connections by simply
+re-connecting the chains instead of breaking and re-placing the conveyor.
+'''
+
+[[mixins]]
+config = "chainhealer.mixins.json"
+
+[[dependencies.chainhealer]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.chainhealer]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.chainhealer]]
+modId = "create"
+type = "required"
+versionRange = "[6.0.0,)"
+ordering = "AFTER"
+side = "BOTH"
