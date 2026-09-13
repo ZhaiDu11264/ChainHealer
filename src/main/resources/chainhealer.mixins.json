@@ -5,7 +5,12 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ChainConveyorHealMixin",
-    "ConnectionPacketHealMixin"
+    "ChainConveyorInventoryAccessor",
+    "ConnectionPacketHealMixin",
+    "DeadLetterMixin",
+    "ExportDiagnosticsMixin",
+    "OrphanedPackagePurgeMixin",
+    "PackagePortTargetHealMixin"
   ],
   "injectors": {
     "defaultRequire": 1

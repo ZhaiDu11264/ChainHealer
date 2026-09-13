@@ -1,0 +1,4 @@
+{
+	"chainhealer.notice.purge": "Stranded package(s) rescued at conveyor %s: dropped %s package(s) from %s orphaned lane(s). They are floating nearby - go pick them up!",
+	"chainhealer.notice.blocked": "Frogport export blocked at %s: %s"
+}

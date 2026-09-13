@@ -1,0 +1,4 @@
+{
+	"chainhealer.notice.purge": "传送带 %s 的被困包裹已被解救：从 %s 条幽灵链路中掉落 %s 个包裹，就在附近——快去捡！",
+	"chainhealer.notice.blocked": "蛙港出货受阻 @ %s：%s"
+}
