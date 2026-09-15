@@ -8,6 +8,8 @@ modId = "chainhealer" #mandatory
 version = "${mod_version}" #mandatory
 displayName = "Chain Healer" #mandatory
 logoFile = "chainhealer.png"
+# Pure logistics fix that runs server-side: clients without the mod can still join.
+displayTest = "IGNORE_SERVER_VERSION"
 description = '''
 Heals one-sided chain conveyor connections instead of amputating them.
 Fixes frogports silently refusing to send packages on a conveyor whose
