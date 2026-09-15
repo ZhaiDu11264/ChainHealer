@@ -107,20 +107,24 @@ public abstract class OrphanedPackagePurgeMixin {
 			travellingPackages.remove(lane);
 
 		if (droppedPackages > 0) {
-			// Orphaned packages were stranded: sync the corrected state, wake
-			// the player up in chat and ping the location so it can be found.
+			// Orphaned packages were stranded: sync the corrected state, then
+			// notify - chat notices and the sound cue are opt-in (default off,
+			// see alerts.* in the mod config).
 			clbe.notifyUpdate();
 			Notice.chat(level, self.getBlockPos(), "purge",
 					"chainhealer.notice.purge", ChatFormatting.RED, 60_000L,
 					self.getBlockPos().toShortString(), droppedPackages, deadLanes.size());
-			level.playSound(null, self.getBlockPos(), SoundEvents.EXPERIENCE_ORB_PICKUP,
-					SoundSource.BLOCKS, 1.0F, 0.5F);
-			long now = System.currentTimeMillis();
-			Long last = chainhealer$lastPurgeLog.get(self.getBlockPos());
-			if (last == null || now - last >= chainhealer$LOG_COOLDOWN_MS) {
-				chainhealer$lastPurgeLog.put(self.getBlockPos(), now);
-				ChainHealer.LOGGER.warn("[Purge] conveyor {} removed {} orphaned lane(s) and dropped {} package(s): {}",
-						self.getBlockPos(), deadLanes.size(), droppedPackages, deadLanes);
+			if (ChainHealer.SOUND_CUE.get())
+				level.playSound(null, self.getBlockPos(), SoundEvents.EXPERIENCE_ORB_PICKUP,
+						SoundSource.BLOCKS, 1.0F, 0.5F);
+			if (ChainHealer.LOG_DIAGNOSTICS.get()) {
+				long now = System.currentTimeMillis();
+				Long last = chainhealer$lastPurgeLog.get(self.getBlockPos());
+				if (last == null || now - last >= chainhealer$LOG_COOLDOWN_MS) {
+					chainhealer$lastPurgeLog.put(self.getBlockPos(), now);
+					ChainHealer.LOGGER.warn("[Purge] conveyor {} removed {} orphaned lane(s) and dropped {} package(s): {}",
+							self.getBlockPos(), deadLanes.size(), droppedPackages, deadLanes);
+				}
 			}
 		}
 		// Empty-lane cleanup is routine housekeeping under normal traffic:

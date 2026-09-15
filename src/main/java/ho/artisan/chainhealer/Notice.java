@@ -35,6 +35,8 @@ public final class Notice {
 	 */
 	public static void chat(Level level, BlockPos pos, String cooldownKey, String langKey,
 			ChatFormatting color, long cooldownMs, Object... args) {
+		if (!ChainHealer.CHAT_NOTICES.get())
+			return;
 		if (level.isClientSide())
 			return;
 		MinecraftServer server = level.getServer();

@@ -1,5 +1,7 @@
 # Chain Healer
 
+![Chain Healer](art/promo.png)
+
 Heals one-sided chain conveyor connections in [Create](https://modrinth.com/mod/create) instead of amputating them - and keeps chain-conveyor package logistics self-healing, self-reporting and ghost-free.
 
 ## Why
@@ -23,8 +25,31 @@ Additionally, vanilla leaks **ghost capacity** in two ways:
 - **Orphaned lane purge** - travelling packages stranded on dead connections are dropped as item entities (nothing is destroyed) and the stale lane is removed; empty lanes are silently reclaimed, so junction nodes keep their full capacity.
 - **Dead-letter for looping packages** - packages that circle a conveyor undelivered for more than 3 minutes are dropped as item entities instead of looping forever.
 - **Export diagnostics** - when a frogport's export fails, the exact blocker (missing BE / missing connection / speed 0 / far-end full / capacity) is logged with a capacity breakdown (`looping=N, packagesOnLanes=N, lanes=N [empty=N, orphaned=N]`).
-- **In-game chat notices** - blocked ports and rescued packages are announced in chat (localized EN / 简体中文) with a sound cue at the affected conveyor, rate-limited per position.
+- **In-game chat notices** (opt-in) - blocked ports and rescued packages can be announced in chat (localized EN / 简体中文) with an optional sound cue at the affected conveyor, rate-limited per position. Off by default.
 - Legitimate removals (the target block is gone) still work, including proper cleanup of stats and in-flight packages.
+
+## Configuration
+
+`config/chainhealer-common.toml` is generated on first launch:
+
+```toml
+[alerts]
+	# Broadcast an in-game chat notice when a frogport export is blocked
+	# or when stranded packages are rescued from a dead chain conveyor lane.
+	# Off by default - the log still records the details.
+	chatNotices = false
+	# Play a sound at the affected conveyor when stranded packages are rescued.
+	# Only used when alerts.chatNotices is enabled.
+	soundCue = false
+
+[diagnostics]
+	# Write rate-limited WARN lines for blocked frogport exports and
+	# purged orphaned lanes to the log file.
+	# On by default - these lines are what makes bug reports diagnosable.
+	logToConsole = true
+```
+
+Set `alerts.chatNotices = true` to get live feedback in-game (useful while actively debugging a logistics network); leave it off for quiet play. The diagnostic log lines are rate-limited (5 s per port, 5 s per conveyor) and stay on by default because they are what makes an exported `latest.log` diagnosable.
 
 ## Compatibility
 

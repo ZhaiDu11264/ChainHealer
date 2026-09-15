@@ -7,6 +7,7 @@ authors = "ZhaiDu11264"
 modId = "chainhealer" #mandatory
 version = "${mod_version}" #mandatory
 displayName = "Chain Healer" #mandatory
+logoFile = "chainhealer.png"
 description = '''
 Heals one-sided chain conveyor connections instead of amputating them.
 Fixes frogports silently refusing to send packages on a conveyor whose

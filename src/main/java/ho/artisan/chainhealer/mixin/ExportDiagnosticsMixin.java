@@ -88,11 +88,12 @@ public abstract class ExportDiagnosticsMixin {
 		if (reason == null)
 			reason = "unknown (all vanilla gates passed - please report)";
 
-		ChainHealer.LOGGER.warn("[Diagnostics] Frogport export blocked at {}: {}", portPos, reason);
+		if (ChainHealer.LOG_DIAGNOSTICS.get())
+			ChainHealer.LOGGER.warn("[Diagnostics] Frogport export blocked at {}: {}", portPos, reason);
 
-		// Wake the player up: a persistently blocked port is invisible in
-		// vanilla. Rate-limited per position + reason so a dead spot does not
-		// turn into chat spam (5 minutes).
+		// Optional in-game notice - default off, see alerts.chatNotices in the
+		// mod config. Rate-limited per position + reason so a dead spot does
+		// not turn into chat spam (5 minutes).
 		if (level instanceof net.minecraft.world.level.Level lvl)
 			Notice.chat(lvl, portPos, "blocked:" + reason, "chainhealer.notice.blocked",
 					ChatFormatting.YELLOW, 300_000L, portPos.toShortString(), reason);
