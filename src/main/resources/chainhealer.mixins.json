@@ -7,7 +7,6 @@
     "ChainConveyorHealMixin",
     "ChainConveyorInventoryAccessor",
     "ConnectionPacketHealMixin",
-    "DeadLetterMixin",
     "ExportDiagnosticsMixin",
     "OrphanedPackagePurgeMixin",
     "PackagePortTargetHealMixin"

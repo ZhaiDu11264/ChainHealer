@@ -9,7 +9,7 @@ Heals one-sided chain conveyor connections in [Create](https://modrinth.com/mod/
 Create stores a chain conveyor connection on **both** conveyors. When a save/load cycle or an unload-timing race leaves one side missing, vanilla's validation deletes the surviving half:
 
 - Frogports bound to that conveyor then fail their `connections.contains(...)` check and **silently refuse to send packages** - the conveyor appears "unrecognised" even though the port is bound correctly.
-- Routing entries time out, in-flight packages loop forever, and the capacity of the whole chain network degrades.
+- Routing entries time out, packages addressed to the surviving side can never be routed again (they keep circling and hold on to capacity), and the whole chain network degrades.
 - Re-connecting the chains could never repair it: the connection packet treats "already connected on this side" as a hard failure, so the only workaround was breaking the conveyor block entirely and re-placing it.
 
 Additionally, vanilla leaks **ghost capacity** in two ways:
@@ -23,10 +23,18 @@ Additionally, vanilla leaks **ghost capacity** in two ways:
 - **Periodic repair** - a repair pass runs on every lazy tick (~2x per second), so corruption from chunk-load races (or a neighbour whose chunk loads later) self-heals within a second.
 - **Re-connect always converges** - connecting two conveyors that already hold a one-sided record now ends in a symmetric state, so simply re-connecting the chains repairs everything.
 - **Orphaned lane purge** - travelling packages stranded on dead connections are dropped as item entities (nothing is destroyed) and the stale lane is removed; empty lanes are silently reclaimed, so junction nodes keep their full capacity.
-- **Dead-letter for looping packages** - packages that circle a conveyor undelivered for more than 3 minutes are dropped as item entities instead of looping forever.
+- **Backlog behaviour is left alone** - a package that cannot be routed *yet* keeps circling the wheel exactly like vanilla. See below.
 - **Export diagnostics** - when a frogport's export fails, the exact blocker (missing BE / missing connection / speed 0 / far-end full / capacity) is logged with a capacity breakdown (`looping=N, packagesOnLanes=N, lanes=N [empty=N, orphaned=N]`).
 - **In-game chat notices** (opt-in) - blocked ports and rescued packages can be announced in chat (localized EN / 简体中文) with an optional sound cue at the affected conveyor, rate-limited per position. Off by default.
 - Legitimate removals (the target block is gone) still work, including proper cleanup of stats and in-flight packages.
+
+## Why looping packages are NOT timed out
+
+Earlier builds of this mod dropped packages that had been circling a conveyor for more than three minutes ("dead-letter"). That was wrong, and it has been removed.
+
+A looping package is usually not dead - it is **waiting for a route**. This happens constantly in normal play, because the routing table only holds entries while the far end is loaded: a wheel in a loaded chunk feeding a wheel in an unloaded chunk keeps the packages circling until that chunk comes back. Vanilla turns this into backpressure: the wheel fills to its capacity (20 by default), frogports stop exporting, and the whole backlog is delivered in one burst once the far end loads again.
+
+A timeout cannot tell "waiting" from "dead", so it destroyed legitimate cargo on a timer - packages were dropped as entities while their destination was simply not loaded yet, and the frogport immediately accepted new ones. Genuinely stranded packages are already handled by the orphaned lane purge, which only touches lanes whose connection no longer exists at all.
 
 ## Configuration
 

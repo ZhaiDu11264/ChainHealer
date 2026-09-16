@@ -34,8 +34,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * </ol>
  *
  * <p>With no live registration the routing table never receives the port's
- * entry, packages addressed to it loop forever and clog the network (see
- * {@link DeadLetterMixin} for the capacity consequence).
+ * entry, so packages addressed to it can never be routed: they keep circling
+ * the wheel and hold on to package capacity, which is experienced as the port
+ * "not recognising" its conveyor.
  *
  * <p>This mixin re-implements register() with three hardening rules: the
  * migration only runs when the far end is a chain conveyor that actually lists
